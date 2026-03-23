@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FocusPulse</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    {% if session.get("user_id") %}
+
+    <!-- HOME LANDING NAVBAR -->
+    <nav class="home-nav">
+        <div class="home-nav-inner">
+            <div class="home-brand">FocusPulse</div>
+
+            <div class="home-nav-links">
+                <a href="#features">Features</a>
+                <a href="#benefits">Benefits</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contact">Contact</a>
+            </div>
+
+            <div class="home-nav-actions">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Dashboard</a>
+                <a href="{{ url_for('planner') }}" class="btn btn-secondary">Planner</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="home-hero">
+        <div class="home-hero-inner">
+            <div class="home-badge">Student Productivity Platform</div>
+
+            <h1 class="home-title">
+                Plan smarter, focus deeper, and track your progress with <span>FocusPulse</span>
+            </h1>
+
+            <p class="home-subtitle">
+                FocusPulse helps students manage tasks, improve focus, and monitor productivity
+                through a clean dashboard and planner experience.
+            </p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-message home-flash">
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <p class="greeting home-greeting">Welcome back, {{ session.get("user_name") }} 👋</p>
+
+            <div class="hero-buttons">
+             <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+             <a href="{{ url_for('planner') }}" class="btn btn-secondary">Open Planner</a>
+             <a href="{{ url_for('focus') }}" class="btn btn-secondary">Focus Mode</a>
+             <a href="{{ url_for('wellness') }}" class="btn btn-secondary">Wellness</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="home-section" id="features">
+        <div class="home-section-header">
+            <h2>Core Features</h2>
+            <p>Everything a student needs to stay organized and productive.</p>
+        </div>
+
+        <div class="home-grid home-grid-3">
+            <div class="home-card">
+                <h3>Task Planner</h3>
+                <p>Create tasks, assign deadlines, and track status with a simple planner.</p>
+            </div>
+            <div class="home-card">
+                <h3>Productivity Dashboard</h3>
+                <p>View total tasks, pending work, completed work, and productivity percentage.</p>
+            </div>
+            <div class="home-card">
+                <h3>Focus Tracking</h3>
+                <p>Support your study routine with a system designed around better daily focus.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="home-section" id="calendar-section">
+    <div class="home-section-header">
+        <h2>Study Calendar</h2>
+        <p>Track dates and quickly attach tasks to important days.</p>
+    </div>
+
+    <div class="calendar-wrapper">
+        <div class="calendar-card">
+            <div class="header">
+                <button class="nav-btn" id="prev">&#8249;</button>
+                <div class="month" id="month"></div>
+                <button class="nav-btn" id="next">&#8250;</button>
+            </div>
+
+            <div class="days">
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+            </div>
+
+            <div class="dates" id="dates"></div>
+        </div>
+
+        <div class="calendar-task-box" id="taskBox" style="display:none;">
+            <h3 id="selectedDate"></h3>
+            <input type="text" id="taskInput" placeholder="Enter task...">
+            <button onclick="saveTask()">Save</button>
+            <ul id="taskList"></ul>
+        </div>
+    </div>
+</section>
+
+    <!-- BENEFITS -->
+    <section class="home-section home-soft-section" id="benefits">
+        <div class="home-section-header">
+            <h2>Why FocusPulse?</h2>
+            <p>Built for students who want clarity, consistency, and better daily control.</p>
+        </div>
+
+        <div class="home-grid home-grid-2">
+            <div class="home-card">
+                <h3>Easy to Use</h3>
+                <p>Clean interface with minimal distractions and straightforward navigation.</p>
+            </div>
+            <div class="home-card">
+                <h3>Progress Visibility</h3>
+                <p>See your work status instantly through dashboard cards and recent task tracking.</p>
+            </div>
+            <div class="home-card">
+                <h3>Motivating Workflow</h3>
+                <p>Watching your completed tasks and productivity score grow keeps you motivated.</p>
+            </div>
+            <div class="home-card">
+                <h3>Project-Ready Solution</h3>
+                <p>A polished Flask-based student productivity system suitable for college demos.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="home-section" id="faq">
+        <div class="home-section-header">
+            <h2>Frequently Asked Questions</h2>
+            <p>Quick answers about the platform.</p>
+        </div>
+
+        <div class="home-faq-wrap">
+            <div class="home-faq-item">
+                <h3>Who is FocusPulse for?</h3>
+                <p>It is designed mainly for students who want better task management and productivity tracking.</p>
+            </div>
+            <div class="home-faq-item">
+                <h3>What can I do after login?</h3>
+                <p>You can open the planner, add tasks, update statuses, delete tasks, and monitor progress on the
+                    dashboard.</p>
+            </div>
+            <div class="home-faq-item">
+                <h3>Does it show progress visually?</h3>
+                <p>Yes. Dashboard cards display task counts and productivity percentage.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <section class="home-section home-footer-section" id="contact">
+        <div class="home-section-header">
+            <h2>Ready to start?</h2>
+            <p>Take control of your tasks and academic productivity with FocusPulse.</p>
+        </div>
+
+        <div class="hero-buttons">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Open Dashboard</a>
+            <a href="{{ url_for('planner') }}" class="btn btn-secondary">Go to Planner</a>
+            <a href="{{ url_for('focus') }}" class="btn btn-secondary">Focus Mode</a>
+        </div>
+
+        <p class="home-footer-text">© 2026 FocusPulse — Student Productivity Platform</p>
+    </section>
+
+    {% else %}
+
+    <div class="main-wrapper">
+        <div class="hero-card">
+            <h1 class="logo">FocusPulse</h1>
+            <p class="tagline">
+                A smart student productivity platform for planning, focus, and progress tracking.
+            </p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flash-message">
+                {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
+            <p class="greeting">Welcome to FocusPulse 👋</p>
+
+            <div class="hero-buttons">
+                <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+                <a href="{{ url_for('signup') }}" class="btn btn-secondary">Signup</a>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+
+</body>
+
+</html>

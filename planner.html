@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planner - FocusPulse</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">FocusPulse</div>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('planner') }}">Planner</a>
+            <a href="{{ url_for('focus') }}">Focus Mode</a>
+            <a href="{{ url_for('wellness') }}">Wellness</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Task Planner</h2>
+        <p class="subtitle">Manage your study tasks here.</p>
+
+        <div class="planner-grid">
+            <div class="planner-form-card">
+                <h3>Add New Task</h3>
+                <form method="POST">
+                    <input type="text" name="task_title" placeholder="Task Title" required>
+                    <input type="text" name="subject" placeholder="Subject" required>
+                    <input type="date" name="deadline" required>
+
+                    <select name="status" required>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+
+                    <button type="submit" class="btn">Add Task</button>
+                </form>
+            </div>
+
+            <div class="planner-task-card">
+                <h3>Your Tasks</h3>
+
+                {% if tasks %}
+                <table>
+                    <tr>
+                        <th>Task</th>
+                        <th>Subject</th>
+                        <th>Deadline</th>
+                        <th>Status</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                    </tr>
+                    {% for task in tasks %}
+                    <tr>
+                        <td>{{ task["task_title"] }}</td>
+                        <td>{{ task["subject"] }}</td>
+                        <td>{{ task["deadline"] }}</td>
+                        <td>{{ task["status"] }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('update_status', task_id=task['id']) }}">
+                                <select name="status">
+                                    <option value="Pending" {% if task["status"]=="Pending" %}selected{% endif %}>
+                                        Pending</option>
+                                    <option value="In Progress" {% if task["status"]=="In Progress" %}selected{% endif
+                                        %}>In Progress</option>
+                                    <option value="Completed" {% if task["status"]=="Completed" %}selected{% endif %}>
+                                        Completed</option>
+                                </select>
+                                <button type="submit" class="small-btn">Save</button>
+                            </form>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('delete_task', task_id=task['id']) }}" class="delete-btn">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% else %}
+                <p>No tasks available. Add your first task.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
